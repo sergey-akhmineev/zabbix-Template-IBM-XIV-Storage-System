@@ -17,7 +17,7 @@ xcli_client = XCLIClient.connect_ssl(ibm_user, ibm_pass, ibm_host_ip)
 result_dict = {}
 
 
-# CMD commands
+# CMD command and create data lists for parsing
 
 ups = xcli_client.cmd.ups_list().as_list
 
@@ -63,6 +63,7 @@ switch = xcli_client.cmd.switch_list().as_list
 
 result_dict ['switch'] = switch
 
+#Translation of data into json format
 result_dict_json = json.dumps(result_dict)
 
 print(result_dict_json)
