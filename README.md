@@ -1,5 +1,5 @@
 # zabbix-Template IBM XIV Storage System
-Template IBM XIV pyxcli works through external script checks
+Template IBM XIV Storage System works through external script checks
 
 ## Step 1
 
