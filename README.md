@@ -5,7 +5,7 @@ Template IBM XIV pyxcli works through external script checks
 
 You must install munch to run this script.
 
--- pip3 install munch
+-- pip3 install munch or pip install munch
 
 ## Step 2
 
