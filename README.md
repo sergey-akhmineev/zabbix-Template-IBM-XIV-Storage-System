@@ -1,13 +1,13 @@
 # zabbix-Template-IBM-XIV-pyxcli
 Template IBM XIV pyxcli
 
-Step 1
+## Step 1
 
 You must install munch to run this script.
 
 -- pip3 install munch
 
-Step 2
+## Step 2
 
 Optional, your must install pyxcli
 
@@ -17,7 +17,7 @@ It must be added to -
 
 /usr/lib/python3.6/site-packages
 
-Step 3
+## Step 3
 
 Import template
 
