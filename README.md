@@ -1,5 +1,5 @@
 # zabbix-Template-IBM-XIV-pyxcli
-Template IBM XIV pyxcli
+Template IBM XIV pyxcli works through external script checks
 
 ## Step 1
 
