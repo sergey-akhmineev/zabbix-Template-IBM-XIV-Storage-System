@@ -23,6 +23,10 @@ It must be added to -
 
 Import template
 
+## Step 4
+
+Change the macro value {$IBM_HOST_IP} to the IP address of your server
+
 
 
 
