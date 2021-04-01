@@ -1,0 +1,2390 @@
+{
+    "zabbix_export": {
+        "version": "5.2",
+        "date": "2021-04-01T01:29:53Z",
+        "groups": [
+            {
+                "name": "Templates/Modules"
+            }
+        ],
+        "templates": [
+            {
+                "template": "Template IBM XIV Storage System",
+                "name": "Template IBM XIV Storage System",
+                "description": "Template for monitoring IBM XIV servers with pyxcli",
+                "groups": [
+                    {
+                        "name": "Templates/Modules"
+                    }
+                ],
+                "applications": [
+                    {
+                        "name": "ATS"
+                    },
+                    {
+                        "name": "CNA"
+                    },
+                    {
+                        "name": "CPU"
+                    },
+                    {
+                        "name": "DIMM"
+                    },
+                    {
+                        "name": "DISK"
+                    },
+                    {
+                        "name": "FAN"
+                    },
+                    {
+                        "name": "FC_PORT"
+                    },
+                    {
+                        "name": "MM"
+                    },
+                    {
+                        "name": "PSU"
+                    },
+                    {
+                        "name": "SWITCH"
+                    },
+                    {
+                        "name": "UPS"
+                    },
+                    {
+                        "name": "Zabbix raw"
+                    }
+                ],
+                "items": [
+                    {
+                        "name": "pyxcli_discovery",
+                        "type": "EXTERNAL",
+                        "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]",
+                        "delay": "3m",
+                        "history": "0",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "description": "Scripts that displays all the information, then parsing json",
+                        "applications": [
+                            {
+                                "name": "Zabbix raw"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "expression": "{last(10m)}=1",
+                                "name": "{HOST.NAME} -> \u041e\u0442 \u0441\u043a\u0440\u0438\u043f\u0442\u0430 pyxcli_discovery \u043d\u0435\u0442 \u0434\u0430\u043d\u043d\u044b\u0445 \u0431\u043e\u043b\u0435\u0435 10 \u043c\u0438\u043d",
+                                "priority": "AVERAGE",
+                                "tags": [
+                                    {
+                                        "tag": "Department",
+                                        "value": "MON.RTK"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "discovery_rules": [
+                    {
+                        "name": "ATS",
+                        "type": "DEPENDENT",
+                        "key": "ats.discovery",
+                        "delay": "0",
+                        "item_prototypes": [
+                            {
+                                "name": "{#COMPONENT.ID} Currently functioning",
+                                "type": "DEPENDENT",
+                                "key": "ats.currently.functioning[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "ATS"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.ats.[?(@.component_id=='{#COMPONENT.ID}')].currently_functioning.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"yes\")\n  return 1\nif (value != \"yes\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Currently functioning is BAD",
+                                        "priority": "HIGH"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Input l1",
+                                "type": "DEPENDENT",
+                                "key": "ats.input.l1[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "ATS"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.ats.[?(@.component_id=='{#COMPONENT.ID}')].input_l1.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"yes\")\n  return 1\nif (value != \"yes\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Input l1 to status problem",
+                                        "priority": "HIGH"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Input_l2",
+                                "type": "DEPENDENT",
+                                "key": "ats.input.l2[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "ATS"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.ats.[?(@.component_id=='{#COMPONENT.ID}')].input_l2.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"yes\")\n  return 1\nif (value != \"yes\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Input l2 to status problem",
+                                        "priority": "HIGH"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Status",
+                                "type": "DEPENDENT",
+                                "key": "ats.status[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "ATS"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.ats.[?(@.component_id=='{#COMPONENT.ID}')].status.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"OK\")\n  return 1\nif (value != \"OK\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Status is BAD",
+                                        "priority": "HIGH"
+                                    }
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                        },
+                        "lld_macro_paths": [
+                            {
+                                "lld_macro": "{#COMPONENT.ID}",
+                                "path": "$.component_id"
+                            }
+                        ],
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.ats"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "CNA",
+                        "type": "DEPENDENT",
+                        "key": "cna.discovery",
+                        "delay": "0",
+                        "item_prototypes": [
+                            {
+                                "name": "{#COMPONENT.ID} Currently functioning",
+                                "type": "DEPENDENT",
+                                "key": "cna.currently.functioning[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "CNA"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.cna.[?(@.component_id=='{#COMPONENT.ID}')].currently_functioning.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"yes\")\n  return 1\nif (value != \"yes\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Currently functioning is BAD",
+                                        "priority": "HIGH"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Status",
+                                "type": "DEPENDENT",
+                                "key": "cna.status[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "CNA"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.cna.[?(@.component_id=='{#COMPONENT.ID}')].status.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"OK\")\n  return 1\nif (value != \"OK\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Status is BAD",
+                                        "priority": "HIGH"
+                                    }
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                        },
+                        "lld_macro_paths": [
+                            {
+                                "lld_macro": "{#COMPONENT.ID}",
+                                "path": "$.component_id"
+                            }
+                        ],
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.cna"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "CPU",
+                        "type": "DEPENDENT",
+                        "key": "cpu.discovery",
+                        "delay": "0",
+                        "item_prototypes": [
+                            {
+                                "name": "{#COMPONENT.ID} Currently functioning",
+                                "type": "DEPENDENT",
+                                "key": "cpu.currently.functioning[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "CPU"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.cpu.[?(@.component_id=='{#COMPONENT.ID}')].currently_functioning.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"yes\")\n  return 1\nif (value != \"yes\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Currently functioning is BAD",
+                                        "priority": "HIGH"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Hardware status",
+                                "type": "DEPENDENT",
+                                "key": "cpu.hardware.status[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "CPU"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.cpu.[?(@.component_id=='{#COMPONENT.ID}')].status.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"OK\")\n  return 1\nif (value != \"OK\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Hardware status is BAD",
+                                        "priority": "HIGH"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Status",
+                                "type": "DEPENDENT",
+                                "key": "cpu.status[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "CPU"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.cpu.[?(@.component_id=='{#COMPONENT.ID}')].status.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"OK\")\n  return 1\nif (value != \"OK\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Status is BAD",
+                                        "priority": "HIGH"
+                                    }
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                        },
+                        "lld_macro_paths": [
+                            {
+                                "lld_macro": "{#COMPONENT.ID}",
+                                "path": "$.component_id"
+                            }
+                        ],
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.cpu"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "DIMM",
+                        "type": "DEPENDENT",
+                        "key": "dimm.discovery",
+                        "delay": "0",
+                        "item_prototypes": [
+                            {
+                                "name": "{#COMPONENT.ID} Hardware status",
+                                "type": "DEPENDENT",
+                                "key": "dimm.hardware.status[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "DIMM"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.dimm.[?(@.component_id=='{#COMPONENT.ID}')].hardware_status.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"OK\")\n  return 1\nif (value != \"OK\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Hardware status is BAD",
+                                        "priority": "HIGH"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Status",
+                                "type": "DEPENDENT",
+                                "key": "dimm.status[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "DIMM"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.dimm.[?(@.component_id=='{#COMPONENT.ID}')].status.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"OK\")\n  return 1\nif (value != \"OK\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Status is BAD",
+                                        "priority": "HIGH"
+                                    }
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                        },
+                        "lld_macro_paths": [
+                            {
+                                "lld_macro": "{#COMPONENT.ID}",
+                                "path": "$.component_id"
+                            }
+                        ],
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.dimm"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "DISK",
+                        "type": "DEPENDENT",
+                        "key": "disk.discovery",
+                        "delay": "0",
+                        "item_prototypes": [
+                            {
+                                "name": "{#COMPONENT.ID} Currently functioning",
+                                "type": "DEPENDENT",
+                                "key": "disk.currently.functioning[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "DISK"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.disk.[?(@.component_id=='{#COMPONENT.ID}')].currently_functioning.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"yes\")\n  return 1\nif (value != \"yes\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Currently functioning is BAD",
+                                        "priority": "HIGH"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Desc Power is on",
+                                "type": "DEPENDENT",
+                                "key": "disk.power.is.on[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "DISK"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.disk.[?(@.component_id=='{#COMPONENT.ID}')].desc.power_is_on.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"no\")\n  return 1\nif (value != \"no\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Desc Power is off",
+                                        "priority": "HIGH"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Desc Read fail",
+                                "type": "DEPENDENT",
+                                "key": "disk.read.fail[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "DISK"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.disk.[?(@.component_id=='{#COMPONENT.ID}')].desc.read_fail.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"no\")\n  return 1\nif (value != \"no\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Desc Read fail",
+                                        "priority": "AVERAGE"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Desc Smart fail",
+                                "type": "DEPENDENT",
+                                "key": "disk.smart.fail[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "DISK"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.disk.[?(@.component_id=='{#COMPONENT.ID}')].desc.smart_fail.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"no\")\n  return 1\nif (value != \"no\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Desc Smart fail",
+                                        "priority": "AVERAGE"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Status",
+                                "type": "DEPENDENT",
+                                "key": "disk.status[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "DISK"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.disk.[?(@.component_id=='{#COMPONENT.ID}')].status.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"OK\")\n  return 1\nif (value != \"OK\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Status is BAD",
+                                        "priority": "HIGH"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Temperature",
+                                "type": "DEPENDENT",
+                                "key": "disk.temperature[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "units": "C",
+                                "applications": [
+                                    {
+                                        "name": "DISK"
+                                    }
+                                ],
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.disk.[?(@.component_id=='{#COMPONENT.ID}')].temperature.first()"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{max(30m)}>35",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Disk temperature > 35 C ({ITEM.VALUE})",
+                                        "priority": "AVERAGE"
+                                    }
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                        },
+                        "lld_macro_paths": [
+                            {
+                                "lld_macro": "{#COMPONENT.ID}",
+                                "path": "$.component_id"
+                            }
+                        ],
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.disk"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "FAN",
+                        "type": "DEPENDENT",
+                        "key": "fan.discovery",
+                        "delay": "0",
+                        "item_prototypes": [
+                            {
+                                "name": "{#COMPONENT.ID} Currently functioning",
+                                "type": "DEPENDENT",
+                                "key": "fan.currently.functioning[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "FAN"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.fan.[?(@.component_id=='{#COMPONENT.ID}')].currently_functioning.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"yes\")\n  return 1\nif (value != \"yes\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Currently functioning is BAD",
+                                        "priority": "AVERAGE"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Status",
+                                "type": "DEPENDENT",
+                                "key": "fan.status[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "FAN"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.fan.[?(@.component_id=='{#COMPONENT.ID}')].status.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"OK\")\n  return 1\nif (value != \"OK\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Status is BAD",
+                                        "priority": "AVERAGE"
+                                    }
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                        },
+                        "lld_macro_paths": [
+                            {
+                                "lld_macro": "{#COMPONENT.ID}",
+                                "path": "$.component_id"
+                            }
+                        ],
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.fan"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "FC_PORT",
+                        "type": "DEPENDENT",
+                        "key": "fc_port.discovery",
+                        "delay": "0",
+                        "item_prototypes": [
+                            {
+                                "name": "{#COMPONENT.ID} Currently functioning",
+                                "type": "DEPENDENT",
+                                "key": "fc_port.currently.functioning[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "FC_PORT"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.fc_port.[?(@.component_id=='{#COMPONENT.ID}')].currently_functioning.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"yes\")\n  return 1\nif (value != \"yes\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Currently functioning is BAD",
+                                        "priority": "AVERAGE"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Error count",
+                                "type": "DEPENDENT",
+                                "key": "fc_port.error.count[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "FC_PORT"
+                                    }
+                                ],
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.fc_port.[?(@.component_id=='{#COMPONENT.ID}')].error_count.first()"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}>0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Error count = ({ITEM.VALUE})",
+                                        "priority": "WARNING"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Port state",
+                                "type": "DEPENDENT",
+                                "key": "fc_port.port.state[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "FC_PORT"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.fc_port.[?(@.component_id=='{#COMPONENT.ID}')].port_state.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"Online\")\n  return 1\nif (value != \"Online\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Port state is BAD",
+                                        "priority": "AVERAGE"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Status",
+                                "type": "DEPENDENT",
+                                "key": "fc_port.status[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "FC_PORT"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.fc_port.[?(@.component_id=='{#COMPONENT.ID}')].status.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"OK\")\n  return 1\nif (value != \"OK\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Status is BAD",
+                                        "priority": "AVERAGE"
+                                    }
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                        },
+                        "lld_macro_paths": [
+                            {
+                                "lld_macro": "{#COMPONENT.ID}",
+                                "path": "$.component_id"
+                            }
+                        ],
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.fc_port"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "MM",
+                        "type": "DEPENDENT",
+                        "key": "mm.discovery",
+                        "delay": "0",
+                        "item_prototypes": [
+                            {
+                                "name": "{#COMPONENT.ID} Currently functioning",
+                                "type": "DEPENDENT",
+                                "key": "mm.currently.functioning[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "MM"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.mm.[?(@.component_id=='{#COMPONENT.ID}')].currently_functioning.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"yes\")\n  return 1\nif (value != \"yes\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last()}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Currently functioning is BAD",
+                                        "priority": "AVERAGE"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Enabled state",
+                                "type": "DEPENDENT",
+                                "key": "mm.enabled[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "MM"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.mm.[?(@.component_id=='{#COMPONENT.ID}')].enabled.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"yes\")\n  return 1\nif (value != \"yes\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                }
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Link 1",
+                                "type": "DEPENDENT",
+                                "key": "mm.link_1[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "MM"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.mm.[?(@.component_id=='{#COMPONENT.ID}')].link_1.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"yes\")\n  return 1\nif (value != \"yes\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Link 1 is BAD",
+                                        "priority": "AVERAGE"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Link 2",
+                                "type": "DEPENDENT",
+                                "key": "mm.link_2[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "MM"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.mm.[?(@.component_id=='{#COMPONENT.ID}')].link_2.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"yes\")\n  return 1\nif (value != \"yes\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Link 2 is BAD",
+                                        "priority": "AVERAGE"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Status",
+                                "type": "DEPENDENT",
+                                "key": "mm.status[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "MM"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.mm.[?(@.component_id=='{#COMPONENT.ID}')].status.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"OK\")\n  return 1\nif (value != \"OK\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Status is BAD",
+                                        "priority": "AVERAGE"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Temperature",
+                                "type": "DEPENDENT",
+                                "key": "mm.temperature[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "units": "C",
+                                "applications": [
+                                    {
+                                        "name": "MM"
+                                    }
+                                ],
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.mm.[?(@.component_id=='{#COMPONENT.ID}')].temperature.first()"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{max(10m)}>30",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Temperature higher than 30 C ({ITEM.VALUE})",
+                                        "priority": "AVERAGE"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Total memory",
+                                "type": "DEPENDENT",
+                                "key": "mm.total.memory[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "units": "bytes",
+                                "applications": [
+                                    {
+                                        "name": "MM"
+                                    }
+                                ],
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.mm.[?(@.component_id=='{#COMPONENT.ID}')].total_memory.first()"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                }
+                            }
+                        ],
+                        "master_item": {
+                            "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                        },
+                        "lld_macro_paths": [
+                            {
+                                "lld_macro": "{#COMPONENT.ID}",
+                                "path": "$.component_id"
+                            }
+                        ],
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.mm"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "PSU",
+                        "type": "DEPENDENT",
+                        "key": "psu.discovery",
+                        "delay": "0",
+                        "item_prototypes": [
+                            {
+                                "name": "{#COMPONENT.ID} Currently functioning",
+                                "type": "DEPENDENT",
+                                "key": "psu.currently.functioning[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "PSU"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.psu.[?(@.component_id=='{#COMPONENT.ID}')].currently_functioning.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"yes\")\n  return 1\nif (value != \"yes\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Currently functioning is BAD",
+                                        "priority": "DISASTER"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Current",
+                                "type": "DEPENDENT",
+                                "key": "psu.current[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "value_type": "FLOAT",
+                                "units": "A",
+                                "applications": [
+                                    {
+                                        "name": "PSU"
+                                    }
+                                ],
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.psu.[?(@.component_id=='{#COMPONENT.ID}')].current.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "RTRIM",
+                                        "parameters": [
+                                            "A"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                }
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Hardware status",
+                                "type": "DEPENDENT",
+                                "key": "psu.hardware.status[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "PSU"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.psu.[?(@.component_id=='{#COMPONENT.ID}')].hardware_status.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"OK\")\n  return 1\nif (value != \"OK\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Hardware status is BAD",
+                                        "priority": "DISASTER"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Power",
+                                "type": "DEPENDENT",
+                                "key": "psu.power[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "value_type": "FLOAT",
+                                "units": "W",
+                                "applications": [
+                                    {
+                                        "name": "PSU"
+                                    }
+                                ],
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.psu.[?(@.component_id=='{#COMPONENT.ID}')].power.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "RTRIM",
+                                        "parameters": [
+                                            "W"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{min(10m)}<50",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Energy value is very low ({ITEM.VALUE})",
+                                        "priority": "HIGH"
+                                    },
+                                    {
+                                        "expression": "{change()}>50",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Readings have changed ({ITEM.VALUE})",
+                                        "priority": "AVERAGE"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Status",
+                                "type": "DEPENDENT",
+                                "key": "psu.status[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "PSU"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.psu.[?(@.component_id=='{#COMPONENT.ID}')].status.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"OK\")\n  return 1\nif (value != \"OK\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Status is BAD",
+                                        "priority": "DISASTER"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Voltage 5v",
+                                "type": "DEPENDENT",
+                                "key": "psu.voltage.5v[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "value_type": "FLOAT",
+                                "units": "V",
+                                "applications": [
+                                    {
+                                        "name": "PSU"
+                                    }
+                                ],
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.psu.[?(@.component_id=='{#COMPONENT.ID}')].voltage_5v.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "RTRIM",
+                                        "parameters": [
+                                            "V"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{change()}>2",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Voltage.5v Readings have changed ({ITEM.VALUE})",
+                                        "priority": "WARNING"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Voltage 12v",
+                                "type": "DEPENDENT",
+                                "key": "psu.voltage.12v[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "value_type": "FLOAT",
+                                "units": "V",
+                                "applications": [
+                                    {
+                                        "name": "PSU"
+                                    }
+                                ],
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.psu.[?(@.component_id=='{#COMPONENT.ID}')].voltage_12v.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "RTRIM",
+                                        "parameters": [
+                                            "V"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{change()}>2",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Voltage.12v Readings have changed ({ITEM.VALUE})",
+                                        "priority": "WARNING"
+                                    }
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                        },
+                        "lld_macro_paths": [
+                            {
+                                "lld_macro": "{#COMPONENT.ID}",
+                                "path": "$.component_id"
+                            }
+                        ],
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.psu"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "SWITCH",
+                        "type": "DEPENDENT",
+                        "key": "switch.discovery",
+                        "delay": "0",
+                        "item_prototypes": [
+                            {
+                                "name": "{#COMPONENT.ID} Cpu util",
+                                "type": "DEPENDENT",
+                                "key": "switch.cpu.util[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "SWITCH"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.switch.[?(@.component_id=='{#COMPONENT.ID}')].cpu_util.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"OK\")\n  return 1\nif (value != \"OK\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                }
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Initialized curr vpd",
+                                "type": "DEPENDENT",
+                                "key": "switch.curr.vpd[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "SWITCH"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.switch.[?(@.component_id=='{#COMPONENT.ID}')].curr_vpd.initialized.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"yes\")\n  return 1\nif (value != \"yes\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                }
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Fans rpm",
+                                "type": "DEPENDENT",
+                                "key": "switch.fans.rpm[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "SWITCH"
+                                    }
+                                ],
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.switch.[?(@.component_id=='{#COMPONENT.ID}')].fans_rpm.first()"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last()}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Fan is not working",
+                                        "priority": "HIGH"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Initialized initial vpd",
+                                "type": "DEPENDENT",
+                                "key": "switch.initial.vpd[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "SWITCH"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.switch.[?(@.component_id=='{#COMPONENT.ID}')].initial_vpd.initialized.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"yes\")\n  return 1\nif (value != \"yes\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                }
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Monitor status",
+                                "type": "DEPENDENT",
+                                "key": "switch.monitor.status[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "SWITCH"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.switch.[?(@.component_id=='{#COMPONENT.ID}')].monitor_status.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"OK\")\n  return 1\nif (value != \"OK\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Monitor status is BAD",
+                                        "priority": "AVERAGE"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Initialized prev vpd",
+                                "type": "DEPENDENT",
+                                "key": "switch.prev.vpd[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "SWITCH"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.switch.[?(@.component_id=='{#COMPONENT.ID}')].prev_vpd.initialized.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"yes\")\n  return 1\nif (value != \"yes\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                }
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Ps1 status",
+                                "type": "DEPENDENT",
+                                "key": "switch.ps1[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "SWITCH"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.switch.[?(@.component_id=='{#COMPONENT.ID}')].ps1.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"OK\")\n  return 1\nif (value != \"OK\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Ps1 is BAD",
+                                        "priority": "HIGH"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Ps2 status",
+                                "type": "DEPENDENT",
+                                "key": "switch.ps2[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "SWITCH"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.switch.[?(@.component_id=='{#COMPONENT.ID}')].ps2.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"OK\")\n  return 1\nif (value != \"OK\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Ps2 is BAD",
+                                        "priority": "HIGH"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Status",
+                                "type": "DEPENDENT",
+                                "key": "switch.status[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "SWITCH"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.switch.[?(@.component_id=='{#COMPONENT.ID}')].status.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"OK\")\n  return 1\nif (value != \"OK\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Status is BAD",
+                                        "priority": "HIGH"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Sw mgmt status",
+                                "type": "DEPENDENT",
+                                "key": "switch.sw.mgmt.status[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "SWITCH"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.switch.[?(@.component_id=='{#COMPONENT.ID}')].sw_mgmt_status.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"OK\")\n  return 1\nif (value != \"OK\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                }
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Voltage",
+                                "type": "DEPENDENT",
+                                "key": "switch.voltage[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "value_type": "FLOAT",
+                                "units": "V",
+                                "applications": [
+                                    {
+                                        "name": "SWITCH"
+                                    }
+                                ],
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.switch.[?(@.component_id=='{#COMPONENT.ID}')].voltage.first()"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                }
+                            }
+                        ],
+                        "master_item": {
+                            "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                        },
+                        "lld_macro_paths": [
+                            {
+                                "lld_macro": "{#COMPONENT.ID}",
+                                "path": "$.component_id"
+                            }
+                        ],
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.switch"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "UPS",
+                        "type": "DEPENDENT",
+                        "key": "ups.discovery",
+                        "delay": "0",
+                        "item_prototypes": [
+                            {
+                                "name": "{#COMPONENT.ID} Apparent load power percent",
+                                "type": "DEPENDENT",
+                                "key": "ups.apparent.load.power.percent[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "units": "%",
+                                "applications": [
+                                    {
+                                        "name": "UPS"
+                                    }
+                                ],
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.ups.[?(@.component_id=='{#COMPONENT.ID}')].apparent_load_power_percent.first()"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{max(10m)}>60",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Apparent load power is high ({ITEM.VALUE})",
+                                        "priority": "AVERAGE"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Battery charge level",
+                                "type": "DEPENDENT",
+                                "key": "ups.battery.charge.level[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "units": "%",
+                                "applications": [
+                                    {
+                                        "name": "UPS"
+                                    }
+                                ],
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.ups.[?(@.component_id=='{#COMPONENT.ID}')].battery_charge_level.first()"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last()}<50",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Battery charge level < 50% ({ITEM.VALUE})",
+                                        "priority": "HIGH"
+                                    },
+                                    {
+                                        "expression": "{last()}<70",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Battery charge level < 70% ({ITEM.VALUE})",
+                                        "priority": "AVERAGE"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Currently functioning",
+                                "type": "DEPENDENT",
+                                "key": "ups.currently.functioning[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "UPS"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.ups.[?(@.component_id=='{#COMPONENT.ID}')].currently_functioning.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"yes\")\n  return 1\nif (value != \"yes\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Currently functioning is BAD",
+                                        "priority": "HIGH"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Input power on",
+                                "type": "DEPENDENT",
+                                "key": "ups.input.power.on[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "UPS"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.ups.[?(@.component_id=='{#COMPONENT.ID}')].input_power_on.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"yes\")\n  return 1\nif (value != \"yes\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Input power off",
+                                        "priority": "HIGH"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Internal temperature",
+                                "type": "DEPENDENT",
+                                "key": "ups.internal.temperature[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "units": "C",
+                                "applications": [
+                                    {
+                                        "name": "UPS"
+                                    }
+                                ],
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.ups.[?(@.component_id=='{#COMPONENT.ID}')].internal_temperature.first()"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{max(30m)}>35",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Internal temperature is high ({ITEM.VALUE})",
+                                        "priority": "AVERAGE"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Load power percent",
+                                "type": "DEPENDENT",
+                                "key": "ups.load.power.percent[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "units": "%",
+                                "applications": [
+                                    {
+                                        "name": "UPS"
+                                    }
+                                ],
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.ups.[?(@.component_id=='{#COMPONENT.ID}')].load_power_percent.first()"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{max(30m)}>60",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Load power is high ({ITEM.VALUE})",
+                                        "priority": "AVERAGE"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Power Status",
+                                "type": "DEPENDENT",
+                                "key": "ups.power.status[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "UPS"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.ups.[?(@.component_id=='{#COMPONENT.ID}')].input_power_on.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"yes\")\n  return 1\nif (value != \"yes\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Power status is BAD",
+                                        "priority": "HIGH"
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "{#COMPONENT.ID} Status",
+                                "type": "DEPENDENT",
+                                "key": "ups.status[{#COMPONENT.ID}]",
+                                "delay": "0",
+                                "applications": [
+                                    {
+                                        "name": "UPS"
+                                    }
+                                ],
+                                "valuemap": {
+                                    "name": "1=OK-0=BAD"
+                                },
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.ups.[?(@.component_id=='{#COMPONENT.ID}')].status.first()"
+                                        ]
+                                    },
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "if (value == \"OK\")\n  return 1\nif (value != \"OK\")\n  return 0"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                                },
+                                "trigger_prototypes": [
+                                    {
+                                        "expression": "{last(5m)}=0",
+                                        "name": "{HOST.NAME} -> {#COMPONENT.ID} Status is BAD",
+                                        "priority": "HIGH"
+                                    }
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]"
+                        },
+                        "lld_macro_paths": [
+                            {
+                                "lld_macro": "{#COMPONENT.ID}",
+                                "path": "$.component_id"
+                            }
+                        ],
+                        "preprocessing": [
+                            {
+                                "type": "JSONPATH",
+                                "parameters": [
+                                    "$.ups"
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "macros": [
+                    {
+                        "macro": "{$IBM_HOST_IP}",
+                        "value": "{HOST.IP}",
+                        "description": "server address"
+                    },
+                    {
+                        "macro": "{$IBM_PASS}",
+                        "type": "SECRET_TEXT",
+                        "description": "pass for xcli"
+                    },
+                    {
+                        "macro": "{$IBM_USER}",
+                        "type": "SECRET_TEXT",
+                        "description": "user for xcli"
+                    }
+                ]
+            }
+        ],
+        "value_maps": [
+            {
+                "name": "1=OK-0=BAD",
+                "mappings": [
+                    {
+                        "value": "0",
+                        "newvalue": "BAD"
+                    },
+                    {
+                        "value": "1",
+                        "newvalue": "OK"
+                    }
+                ]
+            }
+        ]
+    }
+}
