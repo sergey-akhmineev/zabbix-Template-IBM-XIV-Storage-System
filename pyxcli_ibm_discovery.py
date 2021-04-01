@@ -66,5 +66,7 @@ result_dict ['switch'] = switch
 #Translation of data into json format
 result_dict_json = json.dumps(result_dict)
 
-print(result_dict_json)
-
+try:
+    print(result_dict_json)
+except:
+    print(1)
