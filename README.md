@@ -1,6 +1,8 @@
 # zabbix-Template IBM XIV Storage System
 Template IBM XIV Storage System works through external script checks
 
+In the json unloading example.txt file, you can view sample script output and make your data items
+
 ## Step 1
 
 You must install munch to run this script.
