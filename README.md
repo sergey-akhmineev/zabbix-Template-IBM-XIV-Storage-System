@@ -7,9 +7,13 @@ In the json unloading example.txt file, you can view sample script output and ma
 
 You must install munch to run this script.
 
--- pip3 install munch
+```bash
+pip3 install munch
+```
 or 
--- pip install munch
+```bash
+pip install munch
+```
 
 ## Step 2
 
