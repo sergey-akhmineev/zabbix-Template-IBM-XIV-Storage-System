@@ -1,0 +1,3032 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>5.4</version>
+    <date>2022-05-31T09:46:01Z</date>
+    <groups>
+        <group>
+            <uuid>57b7ae836ca64446ba2c296389c009b7</uuid>
+            <name>Templates/Modules</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <uuid>d44ad7ef350d4b44b7b3263dc9b380a0</uuid>
+            <template>Template IBM XIV Storage System</template>
+            <name>Template IBM XIV Storage System</name>
+            <description>Template for monitoring IBM XIV servers with pyxcli
+Скрипт собирает данные через pyxcli, далее json парсится</description>
+            <templates>
+                <template>
+                    <name>Template Exist Unsupported Items ver.2</name>
+                </template>
+            </templates>
+            <groups>
+                <group>
+                    <name>Templates/Modules</name>
+                </group>
+            </groups>
+            <items>
+                <item>
+                    <uuid>565eea325ffd47ec97fc8f96b45f0080</uuid>
+                    <name>pyxcli_discovery</name>
+                    <type>EXTERNAL</type>
+                    <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                    <delay>3m</delay>
+                    <history>0</history>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <description>Scripts that displays all the information, then parsing json</description>
+                    <tags>
+                        <tag>
+                            <tag>Application</tag>
+                            <value>Zabbix raw</value>
+                        </tag>
+                    </tags>
+                    <triggers>
+                        <trigger>
+                            <uuid>891b61a0a80742988f67797358ccf427</uuid>
+                            <expression>last(/Template IBM XIV Storage System/pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}])=1</expression>
+                            <name>{HOST.NAME} -&gt; От скрипта pyxcli_discovery нет данных более 10 мин</name>
+                            <priority>AVERAGE</priority>
+                            <tags>
+                                <tag>
+                                    <tag>Department</tag>
+                                    <value>MON.RTK</value>
+                                </tag>
+                            </tags>
+                        </trigger>
+                    </triggers>
+                </item>
+            </items>
+            <discovery_rules>
+                <discovery_rule>
+                    <uuid>a1e6444c74f8415992288f77ec0053d7</uuid>
+                    <name>ATS</name>
+                    <type>DEPENDENT</type>
+                    <key>ats.discovery</key>
+                    <delay>0</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>ab3aa424b0aa4032abc8041f5238cf50</uuid>
+                            <name>{#COMPONENT.ID} Currently functioning</name>
+                            <type>DEPENDENT</type>
+                            <key>ats.currently.functioning[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.ats.[?(@.component_id=='{#COMPONENT.ID}')].currently_functioning.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;yes&quot;)
+  return 1
+if (value != &quot;yes&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>ATS</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>888994c7e1fb439fae209fbfcbd17b60</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/ats.currently.functioning[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Currently functioning is BAD</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>9b2ca9ca20434ed39b74cff8145e25ad</uuid>
+                            <name>{#COMPONENT.ID} Input l1</name>
+                            <type>DEPENDENT</type>
+                            <key>ats.input.l1[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.ats.[?(@.component_id=='{#COMPONENT.ID}')].input_l1.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;yes&quot;)
+  return 1
+if (value != &quot;yes&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>ATS</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>d5d7ee6b636442df8ee4415a946021ab</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/ats.input.l1[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Input l1 to status problem</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>bea82ec05ee547bc81187d22d054e072</uuid>
+                            <name>{#COMPONENT.ID} Input_l2</name>
+                            <type>DEPENDENT</type>
+                            <key>ats.input.l2[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.ats.[?(@.component_id=='{#COMPONENT.ID}')].input_l2.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;yes&quot;)
+  return 1
+if (value != &quot;yes&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>ATS</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>c4c1412d9ded49cf834a577d6ca26467</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/ats.input.l2[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Input l2 to status problem</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>f00ed59f70ba46eca1682b5da98b9144</uuid>
+                            <name>{#COMPONENT.ID} Status</name>
+                            <type>DEPENDENT</type>
+                            <key>ats.status[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.ats.[?(@.component_id=='{#COMPONENT.ID}')].status.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;OK&quot;)
+  return 1
+if (value != &quot;OK&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>ATS</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>d1b89ca9a8874523b7e7454dc69bee11</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/ats.status[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Status is BAD</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                    <master_item>
+                        <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                    </master_item>
+                    <lld_macro_paths>
+                        <lld_macro_path>
+                            <lld_macro>{#COMPONENT.ID}</lld_macro>
+                            <path>$.component_id</path>
+                        </lld_macro_path>
+                    </lld_macro_paths>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$.ats</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>d59065a658474da0ad2d571dbc77eb4d</uuid>
+                    <name>CNA</name>
+                    <type>DEPENDENT</type>
+                    <key>cna.discovery</key>
+                    <delay>0</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>c1ee9ae0393949cc9ab938bd0bd22620</uuid>
+                            <name>{#COMPONENT.ID} Currently functioning</name>
+                            <type>DEPENDENT</type>
+                            <key>cna.currently.functioning[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.cna.[?(@.component_id=='{#COMPONENT.ID}')].currently_functioning.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;yes&quot;)
+  return 1
+if (value != &quot;yes&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>CNA</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>574fd518822d44f5a82e4d041903d02d</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/cna.currently.functioning[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Currently functioning is BAD</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>95dbf2552a3f4cd4937e2e347a5484e1</uuid>
+                            <name>{#COMPONENT.ID} Status</name>
+                            <type>DEPENDENT</type>
+                            <key>cna.status[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.cna.[?(@.component_id=='{#COMPONENT.ID}')].status.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;OK&quot;)
+  return 1
+if (value != &quot;OK&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>CNA</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>89ea199c4d3349718e65a5a4f4c8cdc8</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/cna.status[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Status is BAD</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                    <master_item>
+                        <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                    </master_item>
+                    <lld_macro_paths>
+                        <lld_macro_path>
+                            <lld_macro>{#COMPONENT.ID}</lld_macro>
+                            <path>$.component_id</path>
+                        </lld_macro_path>
+                    </lld_macro_paths>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$.cna</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>5ec2a35a9ffc47bba2c34f6cf53ffe6d</uuid>
+                    <name>CPU</name>
+                    <type>DEPENDENT</type>
+                    <key>cpu.discovery</key>
+                    <delay>0</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>4c4724e4eb194a0db6e5a222f8837c9e</uuid>
+                            <name>{#COMPONENT.ID} Currently functioning</name>
+                            <type>DEPENDENT</type>
+                            <key>cpu.currently.functioning[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.cpu.[?(@.component_id=='{#COMPONENT.ID}')].currently_functioning.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;yes&quot;)
+  return 1
+if (value != &quot;yes&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>CPU</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>7af7881f48c64360a9f28b01d9388918</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/cpu.currently.functioning[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Currently functioning is BAD</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>819bdfa3f21c4cbb80d169b45bf07617</uuid>
+                            <name>{#COMPONENT.ID} Hardware status</name>
+                            <type>DEPENDENT</type>
+                            <key>cpu.hardware.status[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.cpu.[?(@.component_id=='{#COMPONENT.ID}')].status.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;OK&quot;)
+  return 1
+if (value != &quot;OK&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>CPU</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>4106450972354b898c94dc07bf0227e4</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/cpu.hardware.status[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Hardware status is BAD</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>3dca56cc5c724b78bf9d7a24878c7a2e</uuid>
+                            <name>{#COMPONENT.ID} Status</name>
+                            <type>DEPENDENT</type>
+                            <key>cpu.status[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.cpu.[?(@.component_id=='{#COMPONENT.ID}')].status.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;OK&quot;)
+  return 1
+if (value != &quot;OK&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>CPU</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>50ad8a011c8a4a4baf560d674bc092ad</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/cpu.status[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Status is BAD</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                    <master_item>
+                        <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                    </master_item>
+                    <lld_macro_paths>
+                        <lld_macro_path>
+                            <lld_macro>{#COMPONENT.ID}</lld_macro>
+                            <path>$.component_id</path>
+                        </lld_macro_path>
+                    </lld_macro_paths>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$.cpu</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>7e4e5f33b40b4373ad5cb959df48d7d6</uuid>
+                    <name>DIMM</name>
+                    <type>DEPENDENT</type>
+                    <key>dimm.discovery</key>
+                    <delay>0</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>085413c976af4decbc3c0caa63d1e812</uuid>
+                            <name>{#COMPONENT.ID} Hardware status</name>
+                            <type>DEPENDENT</type>
+                            <key>dimm.hardware.status[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.dimm.[?(@.component_id=='{#COMPONENT.ID}')].hardware_status.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;OK&quot;)
+  return 1
+if (value != &quot;OK&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>DIMM</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>0789b94e386f44d5bb182fa2d4d20a52</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/dimm.hardware.status[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Hardware status is BAD</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>5012a68576e342b088632741d33e702c</uuid>
+                            <name>{#COMPONENT.ID} Status</name>
+                            <type>DEPENDENT</type>
+                            <key>dimm.status[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.dimm.[?(@.component_id=='{#COMPONENT.ID}')].status.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;OK&quot;)
+  return 1
+if (value != &quot;OK&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>DIMM</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>a12dc81dc4bd4b17b0f3d47fe4b01ce7</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/dimm.status[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Status is BAD</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                    <master_item>
+                        <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                    </master_item>
+                    <lld_macro_paths>
+                        <lld_macro_path>
+                            <lld_macro>{#COMPONENT.ID}</lld_macro>
+                            <path>$.component_id</path>
+                        </lld_macro_path>
+                    </lld_macro_paths>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$.dimm</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>32fb2bfb33ca4bd78ebb2b4d7d10e5ed</uuid>
+                    <name>DISK</name>
+                    <type>DEPENDENT</type>
+                    <key>disk.discovery</key>
+                    <delay>0</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>cdf40d7ce093415f8219ecf25b2ca2a2</uuid>
+                            <name>{#COMPONENT.ID} Currently functioning</name>
+                            <type>DEPENDENT</type>
+                            <key>disk.currently.functioning[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.disk.[?(@.component_id=='{#COMPONENT.ID}')].currently_functioning.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;yes&quot;)
+  return 1
+if (value != &quot;yes&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>DISK</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>156ff7b3bb0a4fccb609e7a76dafe817</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/disk.currently.functioning[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Currently functioning is BAD</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>8a33562829324892b6b3340e1f508bdf</uuid>
+                            <name>{#COMPONENT.ID} Desc Power is on</name>
+                            <type>DEPENDENT</type>
+                            <key>disk.power.is.on[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.disk.[?(@.component_id=='{#COMPONENT.ID}')].desc.power_is_on.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;no&quot;)
+  return 1
+if (value != &quot;no&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>DISK</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>f904aad29d81478cac327a040fa4e806</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/disk.power.is.on[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Desc Power is off</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>d91e42d38d214db5bd06d9fb29cef3c2</uuid>
+                            <name>{#COMPONENT.ID} Desc Read fail</name>
+                            <type>DEPENDENT</type>
+                            <key>disk.read.fail[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.disk.[?(@.component_id=='{#COMPONENT.ID}')].desc.read_fail.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;no&quot;)
+  return 1
+if (value != &quot;no&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>DISK</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>f7b916695ba1497f95103ad533168a57</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/disk.read.fail[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Desc Read fail</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>b70c595fabfc49759ec2356a736109e8</uuid>
+                            <name>{#COMPONENT.ID} Desc Smart fail</name>
+                            <type>DEPENDENT</type>
+                            <key>disk.smart.fail[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.disk.[?(@.component_id=='{#COMPONENT.ID}')].desc.smart_fail.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;no&quot;)
+  return 1
+if (value != &quot;no&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>DISK</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>9c8a34ee84fb4ab59d9e33f2a56d7a2d</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/disk.smart.fail[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Desc Smart fail</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>29a844ef5d634a2b8893704124124d33</uuid>
+                            <name>{#COMPONENT.ID} Status</name>
+                            <type>DEPENDENT</type>
+                            <key>disk.status[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.disk.[?(@.component_id=='{#COMPONENT.ID}')].status.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;OK&quot;)
+  return 1
+if (value != &quot;OK&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>DISK</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>f274b8683d91493ab4c490c760434662</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/disk.status[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Status is BAD</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>2ac0199e70834f798711bfa4bde7a8f0</uuid>
+                            <name>{#COMPONENT.ID} Temperature</name>
+                            <type>DEPENDENT</type>
+                            <key>disk.temperature[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <units>C</units>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.disk.[?(@.component_id=='{#COMPONENT.ID}')].temperature.first()</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>DISK</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                    </item_prototypes>
+                    <master_item>
+                        <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                    </master_item>
+                    <lld_macro_paths>
+                        <lld_macro_path>
+                            <lld_macro>{#COMPONENT.ID}</lld_macro>
+                            <path>$.component_id</path>
+                        </lld_macro_path>
+                    </lld_macro_paths>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$.disk</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>db153f81a6a74e0ab0b4c253729e917d</uuid>
+                    <name>FAN</name>
+                    <type>DEPENDENT</type>
+                    <key>fan.discovery</key>
+                    <delay>0</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>b0afdc7ceb9a4a3291cd54944760726c</uuid>
+                            <name>{#COMPONENT.ID} Currently functioning</name>
+                            <type>DEPENDENT</type>
+                            <key>fan.currently.functioning[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.fan.[?(@.component_id=='{#COMPONENT.ID}')].currently_functioning.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;yes&quot;)
+  return 1
+if (value != &quot;yes&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>FAN</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>1db4ee14ea94427b9485e12c4da5ec35</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/fan.currently.functioning[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Currently functioning is BAD</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>63591bfb63d04528ae3a39d32679ebbf</uuid>
+                            <name>{#COMPONENT.ID} Status</name>
+                            <type>DEPENDENT</type>
+                            <key>fan.status[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.fan.[?(@.component_id=='{#COMPONENT.ID}')].status.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;OK&quot;)
+  return 1
+if (value != &quot;OK&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>FAN</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>c3b39e2a074d4c1093a3d7d1d7d605b8</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/fan.status[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Status is BAD</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                    <master_item>
+                        <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                    </master_item>
+                    <lld_macro_paths>
+                        <lld_macro_path>
+                            <lld_macro>{#COMPONENT.ID}</lld_macro>
+                            <path>$.component_id</path>
+                        </lld_macro_path>
+                    </lld_macro_paths>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$.fan</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>69966a4d5fb94bf8bfb65500ab5d398f</uuid>
+                    <name>FC_PORT</name>
+                    <type>DEPENDENT</type>
+                    <key>fc_port.discovery</key>
+                    <delay>0</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>0571b7fa306e491581f5cd73ac2b72af</uuid>
+                            <name>{#COMPONENT.ID} Currently functioning</name>
+                            <type>DEPENDENT</type>
+                            <key>fc_port.currently.functioning[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.fc_port.[?(@.component_id=='{#COMPONENT.ID}')].currently_functioning.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;yes&quot;)
+  return 1
+if (value != &quot;yes&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>FC_PORT</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>c3184ebeda464958bb19f38fdb92d01c</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/fc_port.currently.functioning[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Currently functioning is BAD</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>55f5cfaeacf0469f9a8ba1d62310eede</uuid>
+                            <name>{#COMPONENT.ID} Error count</name>
+                            <type>DEPENDENT</type>
+                            <key>fc_port.error.count[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.fc_port.[?(@.component_id=='{#COMPONENT.ID}')].error_count.first()</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>FC_PORT</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>d5af42b6ae214cd88ee4a0c8f7c48c5f</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/fc_port.error.count[{#COMPONENT.ID}])&gt;10</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Error count &gt; 10</name>
+                                    <opdata>{ITEM.VALUE}</opdata>
+                                    <priority>WARNING</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>a3895f48411149abb277ea13209c17b3</uuid>
+                            <name>{#COMPONENT.ID} Port state</name>
+                            <type>DEPENDENT</type>
+                            <key>fc_port.port.state[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.fc_port.[?(@.component_id=='{#COMPONENT.ID}')].port_state.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;Online&quot;)
+  return 1
+if (value != &quot;Online&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>FC_PORT</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>792c380cc774464a89293e3bdaa5c290</uuid>
+                            <name>{#COMPONENT.ID} Status</name>
+                            <type>DEPENDENT</type>
+                            <key>fc_port.status[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.fc_port.[?(@.component_id=='{#COMPONENT.ID}')].status.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;OK&quot;)
+  return 1
+if (value != &quot;OK&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>FC_PORT</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>57ec672bc7f443408c38857aa64874b9</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/fc_port.status[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Status is BAD</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                    <master_item>
+                        <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                    </master_item>
+                    <lld_macro_paths>
+                        <lld_macro_path>
+                            <lld_macro>{#COMPONENT.ID}</lld_macro>
+                            <path>$.component_id</path>
+                        </lld_macro_path>
+                    </lld_macro_paths>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$.fc_port</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>22d54533197549d7949881ddc5cc7f37</uuid>
+                    <name>MIRROR</name>
+                    <type>DEPENDENT</type>
+                    <key>mirror.discovery</key>
+                    <delay>0</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>9266669a82574d6da06b1e0f203a0889</uuid>
+                            <name>Сonnected state &quot;{#COMPONENT.ID}&quot;</name>
+                            <type>DEPENDENT</type>
+                            <key>mirror.connected.state.[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.mirror.[?(@.local_peer_name=='{#COMPONENT.ID}')].connected.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;yes&quot;)
+  return 1
+if (value != &quot;yes&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>4c2cc9980fc64786812b1334cadd171c</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/mirror.connected.state.[{#COMPONENT.ID}])&lt;&gt;1</expression>
+                                    <name>{HOST.NAME} -&gt; Connected state &quot;{#COMPONENT.ID}&quot; is BAD</name>
+                                    <status>DISABLED</status>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>ed8629c9b5d64c1cb979325838d386c3</uuid>
+                            <name>Mirror error &quot;{#COMPONENT.ID}&quot;</name>
+                            <type>DEPENDENT</type>
+                            <key>mirror.error.[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.mirror.[?(@.local_peer_name=='{#COMPONENT.ID}')].mirror_error.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;No_Error&quot;)
+  return 1
+if (value != &quot;No_Error&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>3adac49fda6d4f9b935751b93233f127</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/mirror.error.[{#COMPONENT.ID}])&lt;&gt;1</expression>
+                                    <name>{HOST.NAME} -&gt; Mirror &quot;{#COMPONENT.ID}&quot; is have error</name>
+                                    <status>DISABLED</status>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>f8bd388be0374b6cb15a3d5dbd0a6d4d</uuid>
+                            <name>Replication state &quot;{#COMPONENT.ID}&quot;</name>
+                            <type>DEPENDENT</type>
+                            <key>mirror.rep.state.[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.mirror.[?(@.local_peer_name=='{#COMPONENT.ID}')].active.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;yes&quot;)
+  return 1
+if (value != &quot;yes&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>de7217d2f01a4bc0b11e151051bf1f3f</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/mirror.rep.state.[{#COMPONENT.ID}])&lt;&gt;1</expression>
+                                    <name>{HOST.NAME} -&gt; Replication state &quot;{#COMPONENT.ID}&quot; is BAD</name>
+                                    <status>DISABLED</status>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>f507a8ccaab74304816ca1fe94974bb5</uuid>
+                            <name>Sync state &quot;{#COMPONENT.ID}&quot;</name>
+                            <type>DEPENDENT</type>
+                            <key>mirror.sync.state.[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.mirror.[?(@.local_peer_name=='{#COMPONENT.ID}')].sync_state.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;RPO OK&quot;)
+  return 1
+if (value != &quot;RPO OK&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>999e9880f98245b6806288c9ee084472</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/mirror.sync.state.[{#COMPONENT.ID}])&lt;&gt;1</expression>
+                                    <name>{HOST.NAME} -&gt; RPO state &quot;{#COMPONENT.ID}&quot; is BAD</name>
+                                    <status>DISABLED</status>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                    <master_item>
+                        <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                    </master_item>
+                    <lld_macro_paths>
+                        <lld_macro_path>
+                            <lld_macro>{#COMPONENT.ID}</lld_macro>
+                            <path>$.local_peer_name</path>
+                        </lld_macro_path>
+                    </lld_macro_paths>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$.mirror</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>72410df91b3043339428913de21bb073</uuid>
+                    <name>MM</name>
+                    <type>DEPENDENT</type>
+                    <key>mm.discovery</key>
+                    <delay>0</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>7203186bd14246dfa1027f35066faf6b</uuid>
+                            <name>{#COMPONENT.ID} Currently functioning</name>
+                            <type>DEPENDENT</type>
+                            <key>mm.currently.functioning[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.mm.[?(@.component_id=='{#COMPONENT.ID}')].currently_functioning.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;yes&quot;)
+  return 1
+if (value != &quot;yes&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Maintenance Module</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>dbe75e1529524f4e9a002f71857d5946</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/mm.currently.functioning[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Currently functioning is BAD</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>4b5f7c66dd2549338f66602e845f6880</uuid>
+                            <name>{#COMPONENT.ID} Enabled state</name>
+                            <type>DEPENDENT</type>
+                            <key>mm.enabled[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.mm.[?(@.component_id=='{#COMPONENT.ID}')].enabled.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;yes&quot;)
+  return 1
+if (value != &quot;yes&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Maintenance Module</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>ed6bf9135ee34d708cf7d91260fd8aff</uuid>
+                            <name>{#COMPONENT.ID} Link 1</name>
+                            <type>DEPENDENT</type>
+                            <key>mm.link_1[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.mm.[?(@.component_id=='{#COMPONENT.ID}')].link_1.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;yes&quot;)
+  return 1
+if (value != &quot;yes&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Maintenance Module</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>0fe12d1dff03414ea7e8a8e390fc0df7</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/mm.link_1[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Link 1 is BAD</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>f19cdf163cd64322951d89a92eb0c08d</uuid>
+                            <name>{#COMPONENT.ID} Link 2</name>
+                            <type>DEPENDENT</type>
+                            <key>mm.link_2[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.mm.[?(@.component_id=='{#COMPONENT.ID}')].link_2.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;yes&quot;)
+  return 1
+if (value != &quot;yes&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Maintenance Module</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>93b971795da64bec901f0f83f281f1cc</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/mm.link_2[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Link 2 is BAD</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>8c4fe7a36ea64a95881c41bb78e3bbab</uuid>
+                            <name>{#COMPONENT.ID} Status</name>
+                            <type>DEPENDENT</type>
+                            <key>mm.status[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.mm.[?(@.component_id=='{#COMPONENT.ID}')].status.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;OK&quot;)
+  return 1
+if (value != &quot;OK&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Maintenance Module</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>ab8af5778dc54de799a57ce80c3a6e83</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/mm.status[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Status is BAD</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>c7f40986999a429eabe298d24bec1f91</uuid>
+                            <name>{#COMPONENT.ID} Temperature</name>
+                            <type>DEPENDENT</type>
+                            <key>mm.temperature[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <units>C</units>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.mm.[?(@.component_id=='{#COMPONENT.ID}')].temperature.first()</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Maintenance Module</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>739375c8cff542d9b456e683d88adafa</uuid>
+                            <name>{#COMPONENT.ID} Total memory</name>
+                            <type>DEPENDENT</type>
+                            <key>mm.total.memory[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <units>bytes</units>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.mm.[?(@.component_id=='{#COMPONENT.ID}')].total_memory.first()</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>Maintenance Module</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                    </item_prototypes>
+                    <master_item>
+                        <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                    </master_item>
+                    <lld_macro_paths>
+                        <lld_macro_path>
+                            <lld_macro>{#COMPONENT.ID}</lld_macro>
+                            <path>$.component_id</path>
+                        </lld_macro_path>
+                    </lld_macro_paths>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$.mm</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>9add1391c9114627ae978f82c35fa106</uuid>
+                    <name>POOL</name>
+                    <type>DEPENDENT</type>
+                    <key>pool.discovery</key>
+                    <delay>0</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>a55525c1a1f145fc92ca56e984c5fd5f</uuid>
+                            <name>Pool locked state &quot;{#COMPONENT.ID}&quot;</name>
+                            <type>DEPENDENT</type>
+                            <key>pool.locked.[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.pool.[?(@.name=='{#COMPONENT.ID}')].locked.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;no&quot;)
+  return 1
+if (value != &quot;no&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>POOL</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>18c20d053349482c9543c9e77c22ae2c</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/pool.locked.[{#COMPONENT.ID}])&lt;&gt;1</expression>
+                                    <name>{HOST.NAME} -&gt; Pool &quot;{#COMPONENT.ID}&quot; not online</name>
+                                    <status>DISABLED</status>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>dde87480f79642d998a3f78a4599920b</uuid>
+                            <name>Snapshot size &quot;{#COMPONENT.ID}&quot;</name>
+                            <type>DEPENDENT</type>
+                            <key>pool.snapshot.size.[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.pool.[?(@.name=='{#COMPONENT.ID}')].snapshot_size.first()</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>POOL</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>b408432cb08440f88aaea250eb90acf7</uuid>
+                            <name>Soft size &quot;{#COMPONENT.ID}&quot;</name>
+                            <type>DEPENDENT</type>
+                            <key>pool.soft.size.[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.pool.[?(@.name=='{#COMPONENT.ID}')].soft_size.first()</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>POOL</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>5277d4cffcd541b48b37fe968be6ef7b</uuid>
+                            <name>Persent used subcription &quot;{#COMPONENT.ID}&quot;</name>
+                            <type>CALCULATED</type>
+                            <key>pool.subscription.[{#COMPONENT.ID}]</key>
+                            <units>%</units>
+                            <params>100*last(//pool.total.volume.size.[{#COMPONENT.ID}])/(last(//pool.soft.size.[{#COMPONENT.ID}])-last(//pool.snapshot.size.[{#COMPONENT.ID}]))</params>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>881d39dbbfe348659bb0cbea955bede7</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/pool.subscription.[{#COMPONENT.ID}])&gt;{$POOL_SUBSCR_PRCNT_AVG}</expression>
+                                    <name>{HOST.NAME} -&gt; Percent of subscribed space on &quot;{#COMPONENT.ID}&quot; &gt; {$POOL_SUBSCR_PRCNT_AVG}%  ({ITEM.VALUE})</name>
+                                    <priority>AVERAGE</priority>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>{HOST.NAME} -&gt; Percent of subscribed space on &quot;{#COMPONENT.ID}&quot; &gt; {$POOL_SUBSCR_PRCNT_HIGH}%  ({ITEM.VALUE})</name>
+                                            <expression>last(/Template IBM XIV Storage System/pool.subscription.[{#COMPONENT.ID}])&gt;{$POOL_SUBSCR_PRCNT_HIGH}</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <uuid>37ab045c0a1645aeb0bd4bc7b7f217cf</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/pool.subscription.[{#COMPONENT.ID}])&gt;{$POOL_SUBSCR_PRCNT_HIGH}</expression>
+                                    <name>{HOST.NAME} -&gt; Percent of subscribed space on &quot;{#COMPONENT.ID}&quot; &gt; {$POOL_SUBSCR_PRCNT_HIGH}%  ({ITEM.VALUE})</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>bfb4011c24ad44adbf9ad266b1227b96</uuid>
+                            <name>Total volume size &quot;{#COMPONENT.ID}&quot;</name>
+                            <type>DEPENDENT</type>
+                            <key>pool.total.volume.size.[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.pool.[?(@.name=='{#COMPONENT.ID}')].total_volume_size.first()</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>POOL</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>1e91f18030404c05a73714cfa33edf6d</uuid>
+                            <name>Used by snapshots &quot;{#COMPONENT.ID}&quot;</name>
+                            <type>DEPENDENT</type>
+                            <key>pool.used.by.snapshots.[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.pool.[?(@.name=='{#COMPONENT.ID}')].used_by_snapshots.first()</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>POOL</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>10f0c19d139b48d1ac230b552d3bf67f</uuid>
+                            <name>Persent used by snapshots &quot;{#COMPONENT.ID}&quot;</name>
+                            <type>CALCULATED</type>
+                            <key>pool.used.snapshots.[{#COMPONENT.ID}]</key>
+                            <units>%</units>
+                            <params>last(//pool.used.by.snapshots.[{#COMPONENT.ID}])/last(//pool.snapshot.size.[{#COMPONENT.ID}])*100</params>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>47a76f3122b949119387244873bc92de</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/pool.used.snapshots.[{#COMPONENT.ID}])&gt;{$POOL_SNAP_AVG}</expression>
+                                    <name>{HOST.NAME} -&gt; Percent of snapshots space on &quot;{#COMPONENT.ID}&quot; &gt; {$POOL_SUBSCR_PRCNT_AVG}%  ({ITEM.VALUE})</name>
+                                    <status>DISABLED</status>
+                                    <priority>AVERAGE</priority>
+                                    <dependencies>
+                                        <dependency>
+                                            <name>{HOST.NAME} -&gt; Percent of snapshots space on &quot;{#COMPONENT.ID}&quot; &gt; {$POOL_SUBSCR_PRCNT_HIGH}%  ({ITEM.VALUE})</name>
+                                            <expression>last(/Template IBM XIV Storage System/pool.used.snapshots.[{#COMPONENT.ID}])&gt;{$POOL_SNAP_HIGH}</expression>
+                                        </dependency>
+                                    </dependencies>
+                                </trigger_prototype>
+                                <trigger_prototype>
+                                    <uuid>cf429f9fde574680addfef94a82ba6f0</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/pool.used.snapshots.[{#COMPONENT.ID}])&gt;{$POOL_SNAP_HIGH}</expression>
+                                    <name>{HOST.NAME} -&gt; Percent of snapshots space on &quot;{#COMPONENT.ID}&quot; &gt; {$POOL_SUBSCR_PRCNT_HIGH}%  ({ITEM.VALUE})</name>
+                                    <status>DISABLED</status>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                    <master_item>
+                        <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                    </master_item>
+                    <lld_macro_paths>
+                        <lld_macro_path>
+                            <lld_macro>{#COMPONENT.ID}</lld_macro>
+                            <path>$.name</path>
+                        </lld_macro_path>
+                    </lld_macro_paths>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$.pool</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>a12f024a488b4cbc8f2e8c1564820a28</uuid>
+                    <name>PSU</name>
+                    <type>DEPENDENT</type>
+                    <key>psu.discovery</key>
+                    <delay>0</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>c3a136b644e843bca4154062909f4317</uuid>
+                            <name>{#COMPONENT.ID} Currently functioning</name>
+                            <type>DEPENDENT</type>
+                            <key>psu.currently.functioning[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.psu.[?(@.component_id=='{#COMPONENT.ID}')].currently_functioning.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;yes&quot;)
+  return 1
+if (value != &quot;yes&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>PSU</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>62cb58fb7f2044e78b0936dfbd83b3e2</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/psu.currently.functioning[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Currently functioning is BAD</name>
+                                    <priority>DISASTER</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>ea29262f86904cde804055dc1db3d8ba</uuid>
+                            <name>{#COMPONENT.ID} Current</name>
+                            <type>DEPENDENT</type>
+                            <key>psu.current[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <value_type>FLOAT</value_type>
+                            <units>A</units>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.psu.[?(@.component_id=='{#COMPONENT.ID}')].current.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>RTRIM</type>
+                                    <parameters>
+                                        <parameter>A</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>PSU</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>c2acd906042b4bca8123c4835aa1368f</uuid>
+                            <name>{#COMPONENT.ID} Hardware status</name>
+                            <type>DEPENDENT</type>
+                            <key>psu.hardware.status[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.psu.[?(@.component_id=='{#COMPONENT.ID}')].hardware_status.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;OK&quot;)
+  return 1
+if (value != &quot;OK&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>PSU</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>2b4f80c77a7542c1ada28be4524754be</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/psu.hardware.status[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Hardware status is BAD</name>
+                                    <priority>DISASTER</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>1c769cdb223e4bd496acd827c38325cd</uuid>
+                            <name>{#COMPONENT.ID} Power</name>
+                            <type>DEPENDENT</type>
+                            <key>psu.power[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <value_type>FLOAT</value_type>
+                            <units>W</units>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.psu.[?(@.component_id=='{#COMPONENT.ID}')].power.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>RTRIM</type>
+                                    <parameters>
+                                        <parameter>W</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>PSU</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>8c8ba2aaba50434d832df8d550745dae</uuid>
+                            <name>{#COMPONENT.ID} Status</name>
+                            <type>DEPENDENT</type>
+                            <key>psu.status[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.psu.[?(@.component_id=='{#COMPONENT.ID}')].status.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;OK&quot;)
+  return 1
+if (value != &quot;OK&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>PSU</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>25e929a677414016af5473ec299504d4</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/psu.status[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Status is BAD</name>
+                                    <priority>DISASTER</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>be51394417534de08d0e94e1daeaab48</uuid>
+                            <name>{#COMPONENT.ID} Voltage 5v</name>
+                            <type>DEPENDENT</type>
+                            <key>psu.voltage.5v[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <value_type>FLOAT</value_type>
+                            <units>V</units>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.psu.[?(@.component_id=='{#COMPONENT.ID}')].voltage_5v.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>RTRIM</type>
+                                    <parameters>
+                                        <parameter>V</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>PSU</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>0475e1cb6f84477d8073e7bd7f74a05d</uuid>
+                            <name>{#COMPONENT.ID} Voltage 12v</name>
+                            <type>DEPENDENT</type>
+                            <key>psu.voltage.12v[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <value_type>FLOAT</value_type>
+                            <units>V</units>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.psu.[?(@.component_id=='{#COMPONENT.ID}')].voltage_12v.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>RTRIM</type>
+                                    <parameters>
+                                        <parameter>V</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>PSU</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                    </item_prototypes>
+                    <master_item>
+                        <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                    </master_item>
+                    <lld_macro_paths>
+                        <lld_macro_path>
+                            <lld_macro>{#COMPONENT.ID}</lld_macro>
+                            <path>$.component_id</path>
+                        </lld_macro_path>
+                    </lld_macro_paths>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$.psu</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>d1816336f9194fd9b1d58da8ba278c1f</uuid>
+                    <name>SWITCH</name>
+                    <type>DEPENDENT</type>
+                    <key>switch.discovery</key>
+                    <delay>0</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>061b8825797b41f6b63f50c8e12f02ae</uuid>
+                            <name>{#COMPONENT.ID} Cpu util</name>
+                            <type>DEPENDENT</type>
+                            <key>switch.cpu.util[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.switch.[?(@.component_id=='{#COMPONENT.ID}')].cpu_util.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;OK&quot;)
+  return 1
+if (value != &quot;OK&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>SWITCH</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>778071e539044510ab668ea2cc64941d</uuid>
+                            <name>{#COMPONENT.ID} Initialized curr vpd</name>
+                            <type>DEPENDENT</type>
+                            <key>switch.curr.vpd[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.switch.[?(@.component_id=='{#COMPONENT.ID}')].curr_vpd.initialized.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;yes&quot;)
+  return 1
+if (value != &quot;yes&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>SWITCH</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>14e43b202576410ea65f747fd8891e04</uuid>
+                            <name>{#COMPONENT.ID} Fans rpm</name>
+                            <type>DEPENDENT</type>
+                            <key>switch.fans.rpm[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.switch.[?(@.component_id=='{#COMPONENT.ID}')].fans_rpm.first()</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>SWITCH</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>f70dfb10976b49b3b9d6089449f19bdf</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/switch.fans.rpm[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Fan is not working</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>50162ccfa5684505a17882f33e204a17</uuid>
+                            <name>{#COMPONENT.ID} Initialized initial vpd</name>
+                            <type>DEPENDENT</type>
+                            <key>switch.initial.vpd[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.switch.[?(@.component_id=='{#COMPONENT.ID}')].initial_vpd.initialized.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;yes&quot;)
+  return 1
+if (value != &quot;yes&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>SWITCH</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>8e5ea0e52bad463ea324af6628a4b070</uuid>
+                            <name>{#COMPONENT.ID} Monitor status</name>
+                            <type>DEPENDENT</type>
+                            <key>switch.monitor.status[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.switch.[?(@.component_id=='{#COMPONENT.ID}')].monitor_status.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;OK&quot;)
+  return 1
+if (value != &quot;OK&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>SWITCH</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>8fe1f00433d74095b0295fbab6b6b8f4</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/switch.monitor.status[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Monitor status is BAD</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>04913d3132ae4ffb93078d91abc17d78</uuid>
+                            <name>{#COMPONENT.ID} Initialized prev vpd</name>
+                            <type>DEPENDENT</type>
+                            <key>switch.prev.vpd[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.switch.[?(@.component_id=='{#COMPONENT.ID}')].prev_vpd.initialized.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;yes&quot;)
+  return 1
+if (value != &quot;yes&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>SWITCH</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>ebf756628e0c4a1684f0ed420e5d4465</uuid>
+                            <name>{#COMPONENT.ID} Ps1 status</name>
+                            <type>DEPENDENT</type>
+                            <key>switch.ps1[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.switch.[?(@.component_id=='{#COMPONENT.ID}')].ps1.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;OK&quot;)
+  return 1
+if (value != &quot;OK&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>SWITCH</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>c3c88257eaab4f2d94f6780ba6706562</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/switch.ps1[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Ps1 is BAD</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>4208d49c850549a5b70235e7693a87cb</uuid>
+                            <name>{#COMPONENT.ID} Ps2 status</name>
+                            <type>DEPENDENT</type>
+                            <key>switch.ps2[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.switch.[?(@.component_id=='{#COMPONENT.ID}')].ps2.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;OK&quot;)
+  return 1
+if (value != &quot;OK&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>SWITCH</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>6ca4ec3eee2e4c1f85168fb98a31f0db</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/switch.ps2[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Ps2 is BAD</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>c2e35c091cba4cd99ac626bd24f1b06f</uuid>
+                            <name>{#COMPONENT.ID} Status</name>
+                            <type>DEPENDENT</type>
+                            <key>switch.status[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.switch.[?(@.component_id=='{#COMPONENT.ID}')].status.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;OK&quot;)
+  return 1
+if (value != &quot;OK&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>SWITCH</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>54669fb7a3434a38a6ec42adcc8ac2ed</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/switch.status[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Status is BAD</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>2d3edaccfc184ed9b1fa04ca5ef11271</uuid>
+                            <name>{#COMPONENT.ID} Sw mgmt status</name>
+                            <type>DEPENDENT</type>
+                            <key>switch.sw.mgmt.status[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.switch.[?(@.component_id=='{#COMPONENT.ID}')].sw_mgmt_status.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;OK&quot;)
+  return 1
+if (value != &quot;OK&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>SWITCH</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>4dd70864deb54da9b86a519cbe1fc70c</uuid>
+                            <name>{#COMPONENT.ID} Voltage</name>
+                            <type>DEPENDENT</type>
+                            <key>switch.voltage[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <value_type>FLOAT</value_type>
+                            <units>V</units>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.switch.[?(@.component_id=='{#COMPONENT.ID}')].voltage.first()</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>SWITCH</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                    </item_prototypes>
+                    <master_item>
+                        <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                    </master_item>
+                    <lld_macro_paths>
+                        <lld_macro_path>
+                            <lld_macro>{#COMPONENT.ID}</lld_macro>
+                            <path>$.component_id</path>
+                        </lld_macro_path>
+                    </lld_macro_paths>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$.switch</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                </discovery_rule>
+                <discovery_rule>
+                    <uuid>53b3b74e32b74b65bb11902cd0a06923</uuid>
+                    <name>UPS</name>
+                    <type>DEPENDENT</type>
+                    <key>ups.discovery</key>
+                    <delay>0</delay>
+                    <item_prototypes>
+                        <item_prototype>
+                            <uuid>ee841fd4626e4af1987717bd6a8cd2d6</uuid>
+                            <name>{#COMPONENT.ID} Apparent load power percent</name>
+                            <type>DEPENDENT</type>
+                            <key>ups.apparent.load.power.percent[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <units>%</units>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.ups.[?(@.component_id=='{#COMPONENT.ID}')].apparent_load_power_percent.first()</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>UPS</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>eb1bbea3dfbc43ddb30ef0378cf2a58d</uuid>
+                                    <expression>max(/Template IBM XIV Storage System/ups.apparent.load.power.percent[{#COMPONENT.ID}],10m)&gt;60</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Apparent load power is high ({ITEM.VALUE})</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>2016803314c64afaaebc4599f1f601ff</uuid>
+                            <name>{#COMPONENT.ID} Battery charge level</name>
+                            <type>DEPENDENT</type>
+                            <key>ups.battery.charge.level[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <units>%</units>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.ups.[?(@.component_id=='{#COMPONENT.ID}')].battery_charge_level.first()</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>UPS</value>
+                                </tag>
+                            </tags>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>33c21f472f4b48b5a7b05886bf050a0f</uuid>
+                            <name>{#COMPONENT.ID} Currently functioning</name>
+                            <type>DEPENDENT</type>
+                            <key>ups.currently.functioning[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.ups.[?(@.component_id=='{#COMPONENT.ID}')].currently_functioning.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;yes&quot;)
+  return 1
+if (value != &quot;yes&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>UPS</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>2ccc398598da4432bac6a29b2c28941e</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/ups.currently.functioning[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Currently functioning is BAD</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>dd9a3875dc3b439b8b92a2902be36220</uuid>
+                            <name>{#COMPONENT.ID} Input power on</name>
+                            <type>DEPENDENT</type>
+                            <key>ups.input.power.on[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.ups.[?(@.component_id=='{#COMPONENT.ID}')].input_power_on.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;yes&quot;)
+  return 1
+if (value != &quot;yes&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>UPS</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>dbdca079312043d09a3f303e28faba8c</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/ups.input.power.on[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Input power off</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>3cc62750da91464b858a5b9f5da17814</uuid>
+                            <name>{#COMPONENT.ID} Internal temperature</name>
+                            <type>DEPENDENT</type>
+                            <key>ups.internal.temperature[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <units>C</units>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.ups.[?(@.component_id=='{#COMPONENT.ID}')].internal_temperature.first()</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>UPS</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>a9dc3331e5584f9db412681dff405c72</uuid>
+                                    <expression>max(/Template IBM XIV Storage System/ups.internal.temperature[{#COMPONENT.ID}],30m)&gt;35</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Internal temperature is high ({ITEM.VALUE})</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>e590578868a0425f8502db9e13dd9f7b</uuid>
+                            <name>{#COMPONENT.ID} Load power percent</name>
+                            <type>DEPENDENT</type>
+                            <key>ups.load.power.percent[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <units>%</units>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.ups.[?(@.component_id=='{#COMPONENT.ID}')].load_power_percent.first()</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>UPS</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>5928c0570e7e4173b1a9c02e3f5e61cb</uuid>
+                                    <expression>max(/Template IBM XIV Storage System/ups.load.power.percent[{#COMPONENT.ID}],30m)&gt;60</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Load power is high ({ITEM.VALUE})</name>
+                                    <priority>AVERAGE</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>6c6ff26b4d704566bbd7eb6af903d3bc</uuid>
+                            <name>{#COMPONENT.ID} Power Status</name>
+                            <type>DEPENDENT</type>
+                            <key>ups.power.status[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.ups.[?(@.component_id=='{#COMPONENT.ID}')].input_power_on.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;yes&quot;)
+  return 1
+if (value != &quot;yes&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>UPS</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>6696f9320aee49be898a1d9c671713fa</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/ups.power.status[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Power status is BAD</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <uuid>a4aff880c9e04638afb9105315acc3d5</uuid>
+                            <name>{#COMPONENT.ID} Status</name>
+                            <type>DEPENDENT</type>
+                            <key>ups.status[{#COMPONENT.ID}]</key>
+                            <delay>0</delay>
+                            <valuemap>
+                                <name>1=OK-0=BAD</name>
+                            </valuemap>
+                            <preprocessing>
+                                <step>
+                                    <type>JSONPATH</type>
+                                    <parameters>
+                                        <parameter>$.ups.[?(@.component_id=='{#COMPONENT.ID}')].status.first()</parameter>
+                                    </parameters>
+                                </step>
+                                <step>
+                                    <type>JAVASCRIPT</type>
+                                    <parameters>
+                                        <parameter>if (value == &quot;OK&quot;)
+  return 1
+if (value != &quot;OK&quot;)
+  return 0</parameter>
+                                    </parameters>
+                                </step>
+                            </preprocessing>
+                            <master_item>
+                                <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                            </master_item>
+                            <tags>
+                                <tag>
+                                    <tag>Application</tag>
+                                    <value>UPS</value>
+                                </tag>
+                            </tags>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <uuid>156914e9022349e0b66a6e1f426d687e</uuid>
+                                    <expression>last(/Template IBM XIV Storage System/ups.status[{#COMPONENT.ID}])=0</expression>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Status is BAD</name>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                    <trigger_prototypes>
+                        <trigger_prototype>
+                            <uuid>8778b47d00314438ad6c84edf259f7f7</uuid>
+                            <expression>last(/Template IBM XIV Storage System/ups.battery.charge.level[{#COMPONENT.ID}])&lt;50 and last(/Template IBM XIV Storage System/ups.input.power.on[{#COMPONENT.ID}])=0</expression>
+                            <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Battery charge level &lt; 50% ({ITEM.VALUE})</name>
+                            <priority>HIGH</priority>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <uuid>fd63ac7711e34b39a74881a9a079f29a</uuid>
+                            <expression>last(/Template IBM XIV Storage System/ups.battery.charge.level[{#COMPONENT.ID}])&lt;70 and last(/Template IBM XIV Storage System/ups.input.power.on[{#COMPONENT.ID}])=0</expression>
+                            <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Battery charge level &lt; 70% ({ITEM.VALUE})</name>
+                            <priority>AVERAGE</priority>
+                            <dependencies>
+                                <dependency>
+                                    <name>{HOST.NAME} -&gt; {#COMPONENT.ID} Battery charge level &lt; 50% ({ITEM.VALUE})</name>
+                                    <expression>last(/Template IBM XIV Storage System/ups.battery.charge.level[{#COMPONENT.ID}])&lt;50 and last(/Template IBM XIV Storage System/ups.input.power.on[{#COMPONENT.ID}])=0</expression>
+                                </dependency>
+                            </dependencies>
+                        </trigger_prototype>
+                    </trigger_prototypes>
+                    <master_item>
+                        <key>pyxcli_ibm_discovery.py[{$IBM_USER}, {$IBM_PASS}, {HOST.IP}]</key>
+                    </master_item>
+                    <lld_macro_paths>
+                        <lld_macro_path>
+                            <lld_macro>{#COMPONENT.ID}</lld_macro>
+                            <path>$.component_id</path>
+                        </lld_macro_path>
+                    </lld_macro_paths>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <parameters>
+                                <parameter>$.ups</parameter>
+                            </parameters>
+                        </step>
+                    </preprocessing>
+                </discovery_rule>
+            </discovery_rules>
+            <macros>
+                <macro>
+                    <macro>{$IBM_PASS}</macro>
+                    <type>SECRET_TEXT</type>
+                    <description>pass for xcli</description>
+                </macro>
+                <macro>
+                    <macro>{$IBM_USER}</macro>
+                    <type>SECRET_TEXT</type>
+                    <description>user for xcli</description>
+                </macro>
+                <macro>
+                    <macro>{$POOL_SNAP_AVG}</macro>
+                    <value>80</value>
+                </macro>
+                <macro>
+                    <macro>{$POOL_SNAP_HIGH}</macro>
+                    <value>90</value>
+                </macro>
+                <macro>
+                    <macro>{$POOL_SUBSCR_PRCNT_AVG}</macro>
+                    <value>90</value>
+                </macro>
+                <macro>
+                    <macro>{$POOL_SUBSCR_PRCNT_HIGH}</macro>
+                    <value>95</value>
+                </macro>
+            </macros>
+            <valuemaps>
+                <valuemap>
+                    <uuid>4a266e67fddf4f27a47f5586e96d5598</uuid>
+                    <name>1=OK-0=BAD</name>
+                    <mappings>
+                        <mapping>
+                            <value>0</value>
+                            <newvalue>BAD</newvalue>
+                        </mapping>
+                        <mapping>
+                            <value>1</value>
+                            <newvalue>OK</newvalue>
+                        </mapping>
+                    </mappings>
+                </valuemap>
+            </valuemaps>
+        </template>
+    </templates>
+</zabbix_export>
