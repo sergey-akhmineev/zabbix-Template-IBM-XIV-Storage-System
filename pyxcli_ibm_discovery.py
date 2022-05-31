@@ -63,6 +63,15 @@ switch = xcli_client.cmd.switch_list().as_list
 
 result_dict ['switch'] = switch
 
+pool = xcli_client.cmd.pool_list().as_list
+
+result_dict ['pool'] = pool
+
+mirror = xcli_client.cmd.mirror_list().as_list
+
+result_dict ['mirror'] = mirror
+
+
 #Translation of data into json format
 result_dict_json = json.dumps(result_dict)
 
